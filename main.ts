@@ -366,72 +366,23 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.button, function (sprite, otherS
     }
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
-    // if (mySprite2) {
-    //     sprites.changeDataNumberBy(mySprite2, "vida", -1)
-    //     if (sprites.readDataNumber(mySprite2, "vida") <= 0) {
-    //         sprites.destroy(otherSprite, effects.spray, 100)
-    //         qtd += -1
-    //     }
-    // }
-    if (inimigo_22) {
-        sprites.setDataNumber(inimigo_22, "vida", sprites.readDataNumber(inimigo_22, "vida")-1)
-        if (sprites.readDataNumber(inimigo_22, "vida") <= 0) {
-            sprites.destroy(otherSprite, effects.spray, 100)
-            qtd2 += -1
+    sprites.changeDataNumberBy(otherSprite, "vida", -1)
+    if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
+        if (sprites.readDataString(otherSprite, "name") == "inimigo_22") {
+            info.changeScoreBy(10)
+        } else if (sprites.readDataString(otherSprite, "name") == "inimigo_3") {
+            info.changeScoreBy(20)
+        } else if (sprites.readDataString(otherSprite, "name") == "mySprite2") {
+            info.changeScoreBy(5)
         }
+        sprites.destroy(otherSprite, effects.spray, 100)
+        qtd2 += -1
     }
-    if (inimigo_3) {
-        sprites.setDataNumber(inimigo_3, "vida", -1)
-        if (sprites.readDataNumber(inimigo_3, "vida") <= 0) {
-            sprites.destroy(otherSprite, effects.spray, 100)
-            qtd2 += -1
-        }
-    } 
-    sprites.destroy(sprite, effects.spray, 100)
-    // if (otherSprite == inimigo_3) {
-    //     inimigo_3.destroy()
-        
-    //     // sprites.changeDataNumberBy(otherSprite, "vida", sprites.readDataNumber(otherSprite, "vida") -2)
-    //     // if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
-    //     //     sprites.destroy(otherSprite, effects.spray, 100)
-    //     //     qtd += 0 - 1
-    //     // }
-    // }
-    // if (otherSprite == inimigo_22) {
-    //     inimigo_22.destroy()
-    //     // sprites.changeDataNumberBy(otherSprite, "vida", sprites.readDataNumber(otherSprite, "vida")-1)
-    //     // if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
-    //     //     sprites.destroy(otherSprite, effects.spray, 100)
-    //     //     qtd += 0 - 1
-    //     // }
-    // }
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    if (mySprite2) {
-        sprites.changeDataNumberBy(mySprite2, "vida", -1)
-        if (sprites.readDataNumber(mySprite2, "vida") <= 0) {
-            sprites.destroy(otherSprite, effects.spray, 100)
-            qtd += -1
-        }
-    }
-    if (inimigo_22) {
-        sprites.changeDataNumberBy(inimigo_22, "vida", -1)
-        if (sprites.readDataNumber(inimigo_22, "vida") <= 0) {
-            sprites.destroy(otherSprite, effects.spray, 100)
-            qtd2 += -1
-        }
-    }
-    if (inimigo_3) {
-        sprites.changeDataNumberBy(inimigo_22, "vida", -1)
-        if (sprites.readDataNumber(inimigo_22, "vida") <= 0) {
-            sprites.destroy(otherSprite, effects.spray, 100)
-            qtd2 += -1
-        }
-    }
+    sprites.destroy(sprite, effects.fire, 100)
 })
 let qtd3 = 0
-let qtd2 = 0
 let qtd = 0
+let qtd2 = 0
 let inimigo_3: Sprite = null
 let inimigo_22: Sprite = null
 let mySprite2: Sprite = null
@@ -456,6 +407,7 @@ let magnitude2 = 0
 let inimigoProximo2 = null
 let menorDistancia2 = 0
 let distancia2 = 0
+info.setScore(0)
 info.setLife(100)
 level = 0
 levelController()
@@ -637,6 +589,7 @@ game.onUpdateInterval(2000, function () {
             true
             )
             sprites.setDataNumber(inimigo_22, "vida", 10)
+            sprites.setDataString(inimigo_22, "name", "inimigo_22")
             inimigo_22.setPosition(randint(-250, scene.screenWidth()), randint(-250, scene.screenHeight()))
             inimigo_22.follow(Jogador, 30)
             qtd2 += 1
@@ -779,6 +732,7 @@ game.onUpdateInterval(1000, function () {
         true
         )
         sprites.setDataNumber(mySprite2, "vida", 5)
+        sprites.setDataString(mySprite2, "name", "mySprite2")
         mySprite2.setPosition(randint(-200, scene.screenWidth()), randint(-200, scene.screenHeight()))
         mySprite2.follow(Jogador, 25)
         qtd += 1
@@ -880,6 +834,7 @@ game.onUpdateInterval(1000, function () {
             true
             )
             sprites.setDataNumber(inimigo_3, "vida", 15)
+            sprites.setDataString(inimigo_3, "name", "inimigo_3")
             inimigo_3.setPosition(randint(-200, scene.screenWidth()), randint(-200, scene.screenHeight()))
             inimigo_3.follow(Jogador, 35)
             qtd3 += 1
