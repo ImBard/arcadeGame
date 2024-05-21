@@ -2,6 +2,67 @@ namespace SpriteKind {
     export const button = SpriteKind.create()
     export const inimigo_2 = SpriteKind.create()
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (Jogador && canStart == 1) {
+        if (controller.left.isPressed()) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`knight_run_left`,
+            100,
+            true
+            )
+        } else {
+            if (controller.right.isPressed()) {
+                animation.runImageAnimation(
+                Jogador,
+                assets.animation`knight_run_right`,
+                100,
+                true
+                )
+            } else {
+                animation.runImageAnimation(
+                Jogador,
+                assets.animation`knight_run_right`,
+                100,
+                true
+                )
+            }
+        }
+    }
+})
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (Jogador && canStart == 1) {
+        power1 = sprites.create(assets.image`power1`, SpriteKind.Projectile)
+        power1.setPosition(Jogador.x, Jogador.y)
+        alvo = inimigoMaisProximo()
+        dx = alvo.x - power1.x
+        dy = alvo.y - power1.y
+        magnitude = Math.sqrt(dx * dx + dy * dy)
+        // Ajuste a velocidade conforme necessário
+        power1.vx = dx / magnitude * 50
+        // Ajuste a velocidade conforme necessário
+        power1.vy = dy / magnitude * 50
+    }
+})
+controller.down.onEvent(ControllerButtonEvent.Released, function () {
+    if (Jogador && canStart == 1) {
+        if (!(controller.right.isPressed()) && !(controller.left.isPressed())) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`Knight_idle`,
+            200,
+            true
+            )
+        } else if (!(controller.left.isPressed()) && !(controller.right.isPressed())) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`Knight_idle`,
+            200,
+            true
+            )
+        }
+    }
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Jogador && canStart == 1) {
         animation.runImageAnimation(
@@ -10,6 +71,30 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         100,
         true
         )
+    }
+})
+controller.right.onEvent(ControllerButtonEvent.Released, function () {
+    if (Jogador && canStart == 1) {
+        if (!(controller.up.isPressed()) && !(controller.down.isPressed())) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`Knight_idle`,
+            200,
+            true
+            )
+        }
+    }
+})
+controller.left.onEvent(ControllerButtonEvent.Released, function () {
+    if (Jogador && canStart == 1) {
+        if (!(controller.up.isPressed()) && !(controller.down.isPressed())) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`Knight_idle_left`,
+            500,
+            true
+            )
+        }
     }
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -202,6 +287,18 @@ function levelController () {
         scene.cameraFollowSprite(Jogador)
     }
 }
+function inimigoMaisProximo () {
+    inimigoProximo = inimigos[0]
+    menorDistancia = Math.sqrt((inimigoProximo.x - Jogador.x) ** 2 + (inimigoProximo.y - Jogador.y) ** 2)
+    for (let inimigo of inimigos) {
+        distancia = Math.sqrt((inimigo.x - Jogador.x) ** 2 + (inimigo.y - Jogador.y) ** 2)
+        if (distancia < menorDistancia) {
+            inimigoProximo = inimigo
+            menorDistancia = distancia
+        }
+    }
+    return inimigoProximo
+}
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSprite) {
     if (mySprite2) {
         info.changeLifeBy(-1)
@@ -217,11 +314,100 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSp
         game.gameOver(false)
     }
 })
+controller.up.onEvent(ControllerButtonEvent.Released, function () {
+    if (Jogador && canStart == 1) {
+        if (!(controller.right.isPressed()) && !(controller.left.isPressed())) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`Knight_idle`,
+            200,
+            true
+            )
+        } else if (!(controller.left.isPressed()) && !(controller.right.isPressed())) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`Knight_idle`,
+            200,
+            true
+            )
+        }
+    }
+})
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (Jogador && canStart == 1) {
+        if (controller.left.isPressed()) {
+            animation.runImageAnimation(
+            Jogador,
+            assets.animation`knight_run_left`,
+            100,
+            true
+            )
+        } else {
+            if (controller.right.isPressed()) {
+                animation.runImageAnimation(
+                Jogador,
+                assets.animation`knight_run_right`,
+                100,
+                true
+                )
+            } else {
+                animation.runImageAnimation(
+                Jogador,
+                assets.animation`knight_run_right`,
+                100,
+                true
+                )
+            }
+        }
+    }
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.button, function (sprite, otherSprite) {
     if (otherSprite == Play && controller.A.isPressed()) {
         level = 1
         levelController()
     }
+})
+// Você pode adicionar efeitos ou aumentar a pontuação aqui
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    // if (mySprite2) {
+    //     sprites.changeDataNumberBy(mySprite2, "vida", -1)
+    //     if (sprites.readDataNumber(mySprite2, "vida") <= 0) {
+    //         sprites.destroy(otherSprite, effects.spray, 100)
+    //         qtd += -1
+    //     }
+    // }
+    if (inimigo_22) {
+        sprites.setDataNumber(inimigo_22, "vida", sprites.readDataNumber(inimigo_22, "vida")-1)
+        if (sprites.readDataNumber(inimigo_22, "vida") <= 0) {
+            sprites.destroy(otherSprite, effects.spray, 100)
+            qtd2 += -1
+        }
+    }
+    if (inimigo_3) {
+        sprites.setDataNumber(inimigo_3, "vida", -1)
+        if (sprites.readDataNumber(inimigo_3, "vida") <= 0) {
+            sprites.destroy(otherSprite, effects.spray, 100)
+            qtd2 += -1
+        }
+    } 
+    sprites.destroy(sprite, effects.spray, 100)
+    // if (otherSprite == inimigo_3) {
+    //     inimigo_3.destroy()
+        
+    //     // sprites.changeDataNumberBy(otherSprite, "vida", sprites.readDataNumber(otherSprite, "vida") -2)
+    //     // if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
+    //     //     sprites.destroy(otherSprite, effects.spray, 100)
+    //     //     qtd += 0 - 1
+    //     // }
+    // }
+    // if (otherSprite == inimigo_22) {
+    //     inimigo_22.destroy()
+    //     // sprites.changeDataNumberBy(otherSprite, "vida", sprites.readDataNumber(otherSprite, "vida")-1)
+    //     // if (sprites.readDataNumber(otherSprite, "vida") <= 0) {
+    //     //     sprites.destroy(otherSprite, effects.spray, 100)
+    //     //     qtd += 0 - 1
+    //     // }
+    // }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (mySprite2) {
@@ -252,11 +438,27 @@ let qtd = 0
 let inimigo_3: Sprite = null
 let inimigo_22: Sprite = null
 let mySprite2: Sprite = null
+let distancia = 0
+let menorDistancia = 0
+let inimigos: Sprite[] = []
+let inimigoProximo: Sprite = null
 let cursor: Sprite = null
 let Play: Sprite = null
+let magnitude = 0
+let dy = 0
+let dx = 0
+let alvo: Sprite = null
+let power1: Sprite = null
 let canStart = 0
 let Jogador: Sprite = null
 let level = 0
+let currentEnemy = null
+let dx2 = 0
+let dy2 = 0
+let magnitude2 = 0
+let inimigoProximo2 = null
+let menorDistancia2 = 0
+let distancia2 = 0
 info.setLife(100)
 level = 0
 levelController()
@@ -441,6 +643,7 @@ game.onUpdateInterval(2000, function () {
             inimigo_22.setPosition(randint(-250, scene.screenWidth()), randint(-250, scene.screenHeight()))
             inimigo_22.follow(Jogador, 30)
             qtd2 += 1
+            inimigos.push(inimigo_22)
         }
     })
 })
@@ -683,6 +886,7 @@ game.onUpdateInterval(1000, function () {
             inimigo_3.setPosition(randint(-200, scene.screenWidth()), randint(-200, scene.screenHeight()))
             inimigo_3.follow(Jogador, 35)
             qtd3 += 1
+            inimigos.push(inimigo_3)
         }
     })
 })
