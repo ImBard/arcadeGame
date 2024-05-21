@@ -38,9 +38,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         dx = alvo.x - power1.x
         dy = alvo.y - power1.y
         magnitude = Math.sqrt(dx * dx + dy * dy)
-        // Ajuste a velocidade conforme necessário
         power1.vx = dx / magnitude * 50
-        // Ajuste a velocidade conforme necessário
         power1.vy = dy / magnitude * 50
     }
 })
@@ -367,7 +365,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.button, function (sprite, otherS
         levelController()
     }
 })
-// Você pode adicionar efeitos ou aumentar a pontuação aqui
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     // if (mySprite2) {
     //     sprites.changeDataNumberBy(mySprite2, "vida", -1)
